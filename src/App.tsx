@@ -1,25 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Sky } from "@react-three/drei";
+import { Canvas } from "react-three-fiber";
+import { Vector3 } from "three";
+import { Physics } from "use-cannon";
+import Camera from "./three-components/Camera/Camera";
+import Cube, { useCubeStore } from "./three-components/Cube/Cube";
+import Ground from "./three-components/Ground/Ground";
+import Player from "./three-components/Player/Player";
 
 function App() {
+  const { cubes } = useCubeStore();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Canvas
+      shadowMap
+      gl={{
+        alpha: false,
+      }}
+    >
+      <Camera fov={50} />
+      <Sky sunPosition={new Vector3(100, 10, 100)} />
+      <ambientLight intensity={0.3} />
+      <pointLight
+        castShadow
+        intensity={0.8}
+        position={new Vector3(100, 100, 100)}
+      />
+      <Physics>
+        <Ground />
+        <Player />
+        <Cube
+          physicsProps={{
+            position: [0, 0.5, -10],
+          }}
+        />
+        {cubes.map((cube) => cube)}
+      </Physics>
+    </Canvas>
   );
 }
 
